@@ -1,0 +1,43 @@
+---
+- name: Instalar SSMS y SQL Server Express en Windows
+  hosts: windows
+  gather_facts: yes
+
+  vars_files:
+    - vars_sql.yml
+
+  tasks:
+    - name: Copiar el instalador de SSMS al equipo Windows
+      ansible.windows.win_copy:
+        src: ./SSMS-Setup-ENU.exe
+        dest: C:\Users\chema\Desktop\SSMS-Setup-ENU.exe
+
+    - name: Copiar el instalador de SQL Server Express al equipo Windows
+      ansible.windows.win_copy:
+        src: ./SQLEXPRADV_x64_ESN.exe
+        dest: C:\Users\chema\Desktop\SQLEXPRADV_x64_ESN.exe.exe
+
+    - name: Ejecutar el instalador de SQL Server Express
+      ansible.windows.win_command:
+        cmd: c:\Users\chema\Desktop\SQLEXPRADV_x64_ESN.exe /qs /ACTION=Install /FEATURES=SQLEngine,FullText /INSTANCENAME=SQLEXPRESS /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" /SQLSVCSTARTUPTYPE=Automatic /AGTSVCACCOUNT="NT AUTHORITY\SYSTEM" /AGTSVCSTARTUPTYPE=Automatic /SECURITYMODE=SQL /SAPWD="{{ ContraseñaSA }}" /TCPENABLED=1 /NPENABLED=0 /BROWSERSVCSTARTUPTYPE=Automatic /SQLSVCINSTANTFILEINIT=1 /IAcceptSQLServerLicenseTerms
+      args:
+        chdir: C:\Users\chema\Desktop
+      register: sql_install_output
+      ignore_errors: yes
+
+    - name: Mostrar salida de instalación de SQL Server Express
+      ansible.builtin.debug:
+        msg: "{{ sql_install_output.stdout }}"
+
+    - name: Ejecutar el instalador de SSMS
+      ansible.windows.win_command:
+        cmd: C:\Users\chema\Desktop\SSMS-Setup-ENU.exe /qs /IACCEPTSSMSLICENSETERMS
+      args:
+        chdir: C:\Users\chema\Desktop
+      register: ssms_install_output
+      ignore_errors: yes
+
+    - name: Mostrar salida de instalación de SSMS
+      ansible.builtin.debug:
+        msg: "{{ ssms_install_output.stdout }}"
+
