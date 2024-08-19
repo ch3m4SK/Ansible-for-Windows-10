@@ -1,0 +1,18 @@
+---
+- name: Instalar características de Windows en máquinas Windows
+  hosts: windows
+  gather_facts: yes
+  tasks:
+    - name: Instalar características de IIS y ASP.NET
+      win_shell: |
+        dism /online /enable-feature /featureName:NetFx4Extended-ASPNET45 /all /norestart
+        dism /online /enable-feature /featureName:IIS-WebServerRole /all /norestart
+        dism /online /enable-feature /featureName:IIS-ManagementConsole /all /norestart
+        dism /online /enable-feature /featureName:IIS-ISAPIFilter /all /norestart
+        dism /online /enable-feature /featureName:IIS-ISAPIExtensions /all /norestart
+        dism /online /enable-feature /featureName:IIS-NetFxExtensibility45 /all /norestart
+        dism /online /enable-feature /featureName:IIS-ASPNET45 /all /norestart
+        dism /online /enable-feature /featureName:IIS-ASP /all /norestart
+        dism /online /enable-feature /featureName:IIS-StaticContent /all /norestart
+        dism /online /enable-feature /featureName:IIS-BasicAuthentication /all /norestart
+        dism /online /enable-feature /featureName:IIS-WindowsAuthentication /all /norestart
